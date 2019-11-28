@@ -24,6 +24,36 @@ class Token(db.Model):
     user = db.relationship(User)
 
 
+
+class Excerpt(db.Model):
+    __tablename__ = 'excerpts'
+    id = db.Column(db.Integer, primary_key=True)
+    body = db.Column(db.Text)
+    scores = db.relationship('Score', backref='excerpts', lazy=True)
+
+    def as_dict(self):
+        return {
+            c.name: str(getattr(self, c.name))
+            for c in self.__table__.columns
+        }
+
+
+
+class Score(db.Model):
+    __tablename__ = 'scores'
+    id = db.Column(db.Integer, primary_key=True)
+    time = db.Column(db.Integer)
+    wpm = db.Column(db.Integer)
+    errors = db.Column(db.Integer)
+    excerpts_id = db.Column(db.Integer,
+                           db.ForeignKey('excerpts.id'),
+                           nullable=False)
+    user_id = db.Column(db.Integer)
+
+
+
+
+
 # setup login manager
 login_manager = LoginManager()
 
